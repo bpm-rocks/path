@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+. bpm
+bpm::include unittest
+unittest::run
+
+unittest::setup() {
+    . ../libpath
+}
+
+unittest::case::finds-bpm.ini() {
+    local result
+
+    path::findParentContaining result -f bpm.ini
+
+    [[ "$result" == "${PWD%test}bpm.ini" ]]
+}
+
+unittest::case::finds-tests() {
+    local result
+
+    path::findParentContaining result -d test
+
+    [[ "$result" == "$PWD" ]]
+}
+
+unittest::case::finds-in-starting-folder() {
+    local result
+
+    path::findParentContaining result -f find-parent-containing.test
+
+    [[ "$result" == "$PWD/find-parent-containing.test" ]]
+}
+
+unittest::case::find-in-root() {
+    local result
+
+    path::findParentContaining result -d "${PWD:1}"
+
+    [[ "$result" = "$PWD" ]]
+}

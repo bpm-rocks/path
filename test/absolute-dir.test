@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+. bpm
+bpm::include unittest
+unittest::run
+
+unittest::setup() {
+    . ../libpath
+}
+
+unittest::case::subdir-cwd() {
+    local actual expected
+
+    # Tests start in the test folder with the test suite.
+    # Go up one folder to where the library is located.
+    cd ..
+    expected=$PWD/test
+    path::absoluteDir actual "test"
+
+    [[ "$actual" == "$expected" ]]
+}
+
+unittest::case::subdir() {
+    local parent result
+
+    # Tests start in the test folder with the test suite.
+    # Go up one folder to where the library is located.
+    parent=$(
+        cd ..
+        echo "$PWD"
+    )
+    path::absoluteDir result "test" "$parent"
+
+    [[ "$result" == "$PWD" ]]
+}
+
+unittest::case::sibling-cwd() {
+    local result
+
+    path::absoluteDir result ../bpm-modules
+
+    [[ "$result" == "${PWD%test}bpm-modules" ]]
+}
+
+unittest::case::root-relative() {
+    local result
+
+    path::absoluteDir result /tmp
+
+    [[ "$result" == "/tmp" ]]
+}
+
+unittest::case::destination-does-not-exist() {
+    local result
+
+    ! path::absoluteDir result /does/not/exist
+}
+
+unittest::case::source-does-not-exist() {
+    local result
+
+    ! path::absoluteDir result . /does/not/exist
+}

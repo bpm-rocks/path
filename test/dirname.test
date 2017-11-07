@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+. bpm
+bpm::include unittest
+unittest::run
+
+unittest::setup() {
+    . ../libpath
+}
+
+unittest::case::a-file-somewhere() {
+    local result
+
+    path::dirname result a/file/somewhere
+
+    [[ "$result" == "a/file" ]]
+}
+
+unittest::case::file-in-current-directory() {
+    local result
+
+    path::dirname result ./filename
+
+    [[ "$result" == "." ]]
+}
+
+unittest::case::file-by-itself() {
+    local result
+
+    path::dirname result filename
+
+    [[ "$result" == "." ]]
+}
+
+unittest::case::file-at-root() {
+    local result
+
+    path::dirname result /filename
+
+    [[ "$result" == "/" ]]
+}
+
+unittest::case::some-dir() {
+    local result
+
+    path::dirname result some/dir/
+
+    [[ "$result" == "some" ]]
+}
+
+unittest::case::dir() {
+    local result
+
+    path::dirname result dir/
+
+    [[ "$result" == "." ]]
+}
+
+unittest::case::root() {
+    local result
+
+    path::dirname result /
+
+    [[ "$result" == / ]]
+}
+
+unittest::case::dir-at-root() {
+    local result
+
+    path::dirname result /dir/
+
+    [[ "$result" == "/" ]]
+}
