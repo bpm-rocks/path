@@ -31,6 +31,26 @@ path::absoluteDir() {
 }
 
 
+# Resolves a file. If you are given a relative path, this turns it into
+# an absolute path.
+#
+# $1 - Destination variable name.
+# $2 - File path to resolve.
+# $3 - Path to resolve against (defaults to current directory).
+#
+# Returns true (0) when everything works. Returns error codes from
+# path::absoluteDir when there are problems.
+path::absoluteFile() {
+    local fileDir result
+
+    path::dirname fileDir "$2"
+    path::absoluteDir result "$fileDir" ${3+"$3"} || return $?
+    result=${result%/}
+
+    local "${1-}" && assign::value "$1" "$result/${2##*/}"
+}
+
+
 # Equivalent to calling `dirname` but does not make a subshell, so this is
 # roughly twice as fast.
 #
